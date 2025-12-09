@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alke Wallet - Enviar Dinero</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body style="padding: 0;">
+  <div class="container">
+    <!-- Page Title -->
+    <div class="page-title">
+      <button class="back-btn" onclick="window.location.href='menu.html'">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <h2>Enviar Dinero</h2>
+      <button class="back-btn" style="margin-left: auto;" data-bs-toggle="modal" data-bs-target="#modalNuevoContacto">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Contenedor para alertas Bootstrap -->
+    <div id="alert-container" style="padding: 0 24px;"></div>
+
+    <!-- Balance Card Small -->
+    <div style="padding: 0 24px; margin-bottom: 16px;">
+      <div style="background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%); border-radius: 16px; padding: 16px 20px; color: white; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-size: 12px; opacity: 0.9;">Saldo disponible</div>
+          <div style="font-size: 24px; font-weight: 700;">$<span id="saldo-envio">0</span></div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="opacity: 0.3;">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div style="padding: 0 24px; margin-bottom: 20px;">
+      <div style="position: relative;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%);">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" id="buscar-contacto" class="form-control" placeholder="Buscar contacto..." style="padding-left: 48px;">
+      </div>
+    </div>
+
+    <!-- Contacts Section -->
+    <div class="section-title">
+      <h3>Contactos</h3>
+      <a href="#" id="btnBuscar">Buscar</a>
+    </div>
+
+    <div class="contact-list" id="lista-contactos" style="padding-bottom: 20px;">
+      <!-- Los contactos se cargan dinamicamente -->
+    </div>
+
+    <!-- Formulario de envio -->
+    <div id="form-envio" style="display: none; padding: 24px;">
+      <div style="background: #F5F3FF; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+        <div class="contact-avatar" style="width: 48px; height: 48px;">
+          <span id="avatar-inicial"></span>
+        </div>
+        <div>
+          <div style="font-weight: 600; color: #1F2937;">Enviando a:</div>
+          <div style="color: #7C3AED; font-weight: 600;" id="contacto-seleccionado"></div>
+        </div>
+      </div>
+
+      <!-- Amount Display -->
+      <div class="amount-display" style="margin: 20px 0;">
+        <span class="amount-currency">$</span>
+        <input type="text" id="monto-display-envio" class="amount-value" value="0" 
+               style="border: none; background: transparent; text-align: center; width: 100%; outline: none;">
+      </div>
+
+      <!-- Numpad -->
+      <div class="numpad">
+        <button class="numpad-btn" onclick="addNumberEnvio('1')">1</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('2')">2</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('3')">3</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('4')">4</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('5')">5</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('6')">6</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('7')">7</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('8')">8</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('9')">9</button>
+        <button class="numpad-btn" onclick="clearAmountEnvio()">C</button>
+        <button class="numpad-btn" onclick="addNumberEnvio('0')">0</button>
+        <button class="numpad-btn action" id="btnEnviarDinero">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Hidden input -->
+      <input type="hidden" id="monto-envio">
+
+      <button type="button" class="btn btn-secondary w-100" onclick="cancelarEnvio()" style="margin-top: 16px;">
+        Cancelar
+      </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="menu.html" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        <span>Inicio</span>
+      </a>
+      <a href="transactions.html" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+        <span>Estadísticas</span>
+      </a>
+      <a href="sendmoney.html" class="nav-item active">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span>Contactos</span>
+      </a>
+      <a href="#" class="nav-item">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span>Perfil</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Modal para agregar nuevo contacto -->
+  <div class="modal fade" id="modalNuevoContacto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Contacto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Contenedor para alertas dentro del modal -->
+          <div id="modal-alert"></div>
+          <form id="formNuevoContacto">
+            <div class="form-group">
+              <label class="form-label">Nombre y Apellido</label>
+              <input type="text" id="nuevo-nombre" class="form-control" placeholder="Nombre completo" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Número de CBU (22 dígitos)</label>
+              <input type="text" id="nuevo-cbu" class="form-control" placeholder="CBU de 22 dígitos" maxlength="22" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alias</label>
+              <input type="text" id="nuevo-alias" class="form-control" placeholder="Alias" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nombre del Banco</label>
+              <input type="text" id="nuevo-banco" class="form-control" placeholder="Banco" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Guardar contacto
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal fade" id="modalExito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius: 24px;">
+        <div class="modal-body" style="padding: 40px 24px;">
+          <div class="success-container">
+            <div class="success-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 class="success-title">¡Transferencia Exitosa!</h3>
+            <p class="success-subtitle" id="exito-mensaje">El dinero ha sido enviado correctamente</p>
+            
+            <div class="receipt-details">
+              <div class="receipt-row">
+                <span class="receipt-label">Destinatario</span>
+                <span class="receipt-value" id="recibo-destinatario">-</span>
+              </div>
+              <div class="receipt-row">
+                <span class="receipt-label">Monto</span>
+                <span class="receipt-value" id="recibo-monto">-</span>
+              </div>
+              <div class="receipt-row">
+                <span class="receipt-label">Fecha</span>
+                <span class="receipt-value" id="recibo-fecha">-</span>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" onclick="window.location.href='menu.html'">
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Numpad functions for send money
+    let currentAmountEnvio = '0';
+    
+    function updateDisplayEnvio() {
+      const formatted = parseInt(currentAmountEnvio).toLocaleString('es-CL');
+      document.getElementById('monto-display-envio').value = formatted;
+      document.getElementById('monto-envio').value = currentAmountEnvio;
+    }
+    
+    function addNumberEnvio(num) {
+      if (currentAmountEnvio === '0') {
+        currentAmountEnvio = num;
+      } else if (currentAmountEnvio.length < 10) {
+        currentAmountEnvio += num;
+      }
+      updateDisplayEnvio();
+    }
+    
+    function clearAmountEnvio() {
+      currentAmountEnvio = '0';
+      updateDisplayEnvio();
+    }
+
+    function cancelarEnvio() {
+      currentAmountEnvio = '0';
+      updateDisplayEnvio();
+      document.getElementById('form-envio').style.display = 'none';
+      document.querySelector('.contact-list').style.display = 'block';
+      document.querySelectorAll('.contact-item').forEach(item => item.classList.remove('active'));
+    }
+  </script>
+</body>
+</html>
