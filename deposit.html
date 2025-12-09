@@ -21,36 +21,36 @@
     </div>
 
     <!-- Balance Display -->
-    <div class="stats-card" style="margin-top: 0;">
+    <div class="stats-card" style="margin-top: 0; padding: 15px;">
       <div style="text-align: center;">
-        <div style="color: #6B7280; font-size: 14px; margin-bottom: 8px;">Saldo disponible</div>
-        <div class="stats-amount" id="saldo-deposito">$60.000</div>
+        <div style="color: #6B7280; font-size: 12px; margin-bottom: 4px;">Saldo disponible</div>
+        <div class="stats-amount" id="saldo-deposito" style="font-size: 24px;">$60.000</div>
       </div>
     </div>
 
     <!-- Amount Input Section -->
-    <div class="send-money-container">
-      <div class="amount-display">
-        <span class="amount-currency">$</span>
+    <div class="send-money-container" style="padding: 10px 20px;">
+      <div class="amount-display" style="margin-bottom: 10px;">
+        <span class="amount-currency" style="font-size: 18px;">$</span>
         <input type="text" id="monto-display" class="amount-value" value="0" 
-               style="border: none; background: transparent; text-align: center; width: 100%; outline: none;">
+               style="border: none; background: transparent; text-align: center; width: 100%; outline: none; font-size: 32px;">
       </div>
 
       <!-- Numpad -->
-      <div class="numpad">
-        <button class="numpad-btn" onclick="addNumber('1')">1</button>
-        <button class="numpad-btn" onclick="addNumber('2')">2</button>
-        <button class="numpad-btn" onclick="addNumber('3')">3</button>
-        <button class="numpad-btn" onclick="addNumber('4')">4</button>
-        <button class="numpad-btn" onclick="addNumber('5')">5</button>
-        <button class="numpad-btn" onclick="addNumber('6')">6</button>
-        <button class="numpad-btn" onclick="addNumber('7')">7</button>
-        <button class="numpad-btn" onclick="addNumber('8')">8</button>
-        <button class="numpad-btn" onclick="addNumber('9')">9</button>
-        <button class="numpad-btn" onclick="clearAmount()">C</button>
-        <button class="numpad-btn" onclick="addNumber('0')">0</button>
-        <button class="numpad-btn" onclick="deleteNumber()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div class="numpad" style="gap: 8px; margin-bottom: 10px;">
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('1')">1</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('2')">2</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('3')">3</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('4')">4</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('5')">5</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('6')">6</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('7')">7</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('8')">8</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('9')">9</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="clearAmount()">C</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="addNumber('0')">0</button>
+        <button class="numpad-btn" style="width: 60px; height: 50px;" onclick="deleteNumber()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
           </svg>
         </button>
@@ -61,7 +61,7 @@
         <input type="number" id="monto-deposito" min="1">
       </form>
 
-      <button type="button" id="btnDepositar" class="btn btn-success w-100" style="margin-top: 20px;">
+      <button type="button" id="btnDepositar" class="btn btn-success w-100" style="margin-top: 10px; padding: 12px; font-size: 16px;">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
