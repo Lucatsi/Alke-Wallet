@@ -469,3 +469,98 @@ function mostrarMovimientosDashboard() {
     $lista.append($item);
   });
 }
+
+// ========================================
+// PERFIL - Funcionalidades
+// ========================================
+
+// Inicializar perfil
+function inicializarPerfil() {
+  // Cargar datos guardados
+  const nombre = localStorage.getItem('walletNombre') || 'Usuario';
+  const email = localStorage.getItem('walletEmail') || 'usuario@email.com';
+  const darkMode = localStorage.getItem('walletDarkMode') === 'true';
+  
+  // Llenar campos
+  if ($('#profile-name').length) {
+    $('#profile-name').val(nombre);
+  }
+  if ($('#profile-email').length) {
+    $('#profile-email').val(email);
+  }
+  if ($('#profile-name-display').length) {
+    $('#profile-name-display').text(nombre);
+  }
+  if ($('#profile-email-display').length) {
+    $('#profile-email-display').text(email);
+  }
+  if ($('#dark-mode-toggle').length) {
+    $('#dark-mode-toggle').prop('checked', darkMode);
+  }
+  
+  // Aplicar modo oscuro si está activado
+  if (darkMode) {
+    $('body').addClass('dark-mode');
+  }
+}
+
+// Aplicar modo oscuro en todas las páginas
+function aplicarModoOscuro() {
+  const darkMode = localStorage.getItem('walletDarkMode') === 'true';
+  if (darkMode) {
+    $('body').addClass('dark-mode');
+  }
+}
+
+// Guardar perfil
+$('#btn-guardar-perfil').click(function() {
+  const nombre = $('#profile-name').val().trim();
+  const email = $('#profile-email').val().trim();
+  
+  if (nombre) {
+    localStorage.setItem('walletNombre', nombre);
+    $('#profile-name-display').text(nombre);
+  }
+  if (email) {
+    localStorage.setItem('walletEmail', email);
+    $('#profile-email-display').text(email);
+  }
+  
+  mostrarAlertaBootstrap('#alert-container', 'success', '¡Cambios guardados correctamente!');
+});
+
+// Toggle modo oscuro
+$('#dark-mode-toggle').change(function() {
+  const darkMode = $(this).is(':checked');
+  localStorage.setItem('walletDarkMode', darkMode);
+  
+  if (darkMode) {
+    $('body').addClass('dark-mode');
+  } else {
+    $('body').removeClass('dark-mode');
+  }
+});
+
+// Cerrar sesión
+$('#btn-cerrar-sesion').click(function() {
+  window.location.href = 'login.html';
+});
+
+// Actualizar nombre en menú principal
+function actualizarNombreMenu() {
+  const nombre = localStorage.getItem('walletNombre') || 'Usuario';
+  $('.user-info span').first().text('Hola ' + nombre);
+}
+
+// Ejecutar en document ready
+$(document).ready(function() {
+  aplicarModoOscuro();
+  
+  if ($('#profile-name').length) {
+    inicializarPerfil();
+  }
+  
+  if ($('.user-info').length) {
+    actualizarNombreMenu();
+  }
+});
