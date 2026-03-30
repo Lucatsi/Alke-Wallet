@@ -1,0 +1,71 @@
+{% extends "wallet/base.html" %}
+
+{% block content %}
+<!-- Header -->
+<div class="wallet-header" style="padding-bottom: 40px;">
+  <div class="header-top">
+    <a href="{% url 'wallet:inicio' %}" class="header-icon" title="Volver">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <h2 style="font-size: 18px; font-weight: 600; color: white; margin: 0;">Transacciones</h2>
+    <div style="width: 40px;"></div>
+  </div>
+</div>
+
+<div style="padding: 24px; padding-bottom: 120px;">
+  <!-- Filtro -->
+  <select class="filter-select">
+    <option value="all">Todas las transacciones</option>
+    <option value="income">Solo ingresos</option>
+    <option value="expense">Solo gastos</option>
+    <option value="transfer">Solo transferencias</option>
+  </select>
+
+  <!-- Stats Card -->
+  <div class="stats-card" style="margin: 0 0 24px;">
+    <div class="stats-header">
+      <div>
+        <div class="stats-title">Resumen del mes</div>
+        <div style="font-size: 13px; color: var(--text-gray);">Marzo 2026</div>
+      </div>
+    </div>
+    <div class="stats-chart">
+      <div class="chart-bar" style="height: 40%;"></div>
+      <div class="chart-bar" style="height: 65%;"></div>
+      <div class="chart-bar" style="height: 30%;"></div>
+      <div class="chart-bar" style="height: 80%;"></div>
+      <div class="chart-bar" style="height: 55%;"></div>
+      <div class="chart-bar" style="height: 90%;"></div>
+      <div class="chart-bar" style="height: 45%;"></div>
+    </div>
+  </div>
+
+  <!-- Transaction List -->
+  <div class="section-title" style="padding: 0 0 12px;">
+    <h3>Historial completo</h3>
+  </div>
+
+  <div class="transaction-list">
+    {% for tx in transacciones %}
+    <div class="transaction-item">
+      <div class="transaction-icon {{ tx.tipo }}">
+        {% if tx.tipo == 'income' %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+        {% elif tx.tipo == 'expense' %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+        {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+        {% endif %}
+      </div>
+      <div class="transaction-info">
+        <div class="transaction-title">{{ tx.titulo }}</div>
+        <div class="transaction-date">{{ tx.fecha }}</div>
+      </div>
+      <div class="transaction-amount {{ tx.clase }}">{{ tx.monto }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

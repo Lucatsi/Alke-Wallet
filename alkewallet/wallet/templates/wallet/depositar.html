@@ -1,0 +1,81 @@
+{% extends "wallet/base.html" %}
+
+{% block content %}
+<!-- Header -->
+<div class="wallet-header" style="padding-bottom: 40px;">
+  <div class="header-top">
+    <a href="{% url 'wallet:inicio' %}" class="header-icon" title="Volver">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <h2 style="font-size: 18px; font-weight: 600; color: white; margin: 0;">Depositar</h2>
+    <div style="width: 40px;"></div>
+  </div>
+</div>
+
+<div class="modern-form" style="padding-bottom: 120px;">
+  <!-- Saldo actual -->
+  <div class="stats-card" style="margin: -20px 0 24px; text-align: center;">
+    <div style="font-size: 14px; color: var(--text-gray); margin-bottom: 4px;">Saldo actual</div>
+    <div style="font-size: 28px; font-weight: 700; color: var(--text-dark);">{{ saldo }}</div>
+  </div>
+
+  <!-- Mensajes de éxito/error -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+    {% if message.tags == 'success' %}
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    {% else %}
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    {% endif %}
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <!-- Formulario de depósito -->
+  <form method="POST" action="{% url 'wallet:depositar' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label">Monto a depositar</label>
+      <input type="number" name="monto" class="form-control" placeholder="$0" min="1" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Método de depósito</label>
+      <select name="metodo" class="filter-select" required>
+        <option value="">Seleccionar método</option>
+        <option value="bank">Transferencia bancaria</option>
+        <option value="card">Tarjeta de crédito/débito</option>
+        <option value="cash">Depósito en efectivo</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Descripción (opcional)</label>
+      <input type="text" name="descripcion" class="form-control" placeholder="Ej: Depósito de sueldo">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100" style="margin-top: 16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      Confirmar Depósito
+    </button>
+  </form>
+
+  <!-- Info card -->
+  <div class="alert alert-info" style="margin-top: 20px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>Los depósitos se reflejan en tu saldo de forma inmediata.</span>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "wallet/base.html" %}
+
+{% block content %}
+<!-- Header con Balance -->
+<div class="wallet-header">
+  <div class="header-top">
+    <div class="greeting">
+      <span>Hola {{ usuario }}</span>
+      <strong>¡Bienvenido!</strong>
+    </div>
+    <div class="header-icons">
+      <button class="header-icon" title="Notificaciones">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="balance-card">
+    <div class="balance-label">Saldo Disponible</div>
+    <div class="balance-amount">{{ saldo }}</div>
+    <div class="balance-change">↑ 2.5% este mes</div>
+  </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+  <a href="{% url 'wallet:depositar' %}" class="action-btn">
+    <div class="action-btn-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+    </div>
+    <span>Depositar</span>
+  </a>
+  <a href="{% url 'wallet:transferir' %}" class="action-btn">
+    <div class="action-btn-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+      </svg>
+    </div>
+    <span>Transferir</span>
+  </a>
+  <a href="{% url 'wallet:transacciones' %}" class="action-btn">
+    <div class="action-btn-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <span>Historial</span>
+  </a>
+</div>
+
+<!-- Promo Card -->
+<div class="promo-card">
+  <div class="promo-content">
+    <h4>¡Invita a tus amigos!</h4>
+    <p>Gana $5.000 por cada referido</p>
+  </div>
+  <span class="promo-badge">NUEVO</span>
+</div>
+
+<!-- Recent Transactions -->
+<div class="section-title">
+  <h3>Últimos movimientos</h3>
+  <a href="{% url 'wallet:transacciones' %}">Ver todos</a>
+</div>
+
+<div class="transaction-list" style="padding-bottom: 100px;">
+  {% for tx in transacciones %}
+  <div class="transaction-item">
+    <div class="transaction-icon {{ tx.tipo }}">
+      {% if tx.tipo == 'income' %}
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+      {% elif tx.tipo == 'expense' %}
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+      {% else %}
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+      {% endif %}
+    </div>
+    <div class="transaction-info">
+      <div class="transaction-title">{{ tx.titulo }}</div>
+      <div class="transaction-date">{{ tx.fecha }}</div>
+    </div>
+    <div class="transaction-amount {{ tx.clase }}">{{ tx.monto }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

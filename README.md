@@ -1,41 +1,88 @@
-# 🏦 Proyecto Alke Wallet - Base de Datos Relacional
+# Alke Wallet - Proyecto Django (Módulo 6)
 
-Este repositorio contiene la implementación y diseño de la base de datos relacional para **Alke Wallet**, un sistema de billetera virtual que permite a los usuarios almacenar fondos, realizar transacciones y consultar historiales.
+Aplicación web básica de billetera digital desarrollada con **Django 6.0.3** para el módulo 6 del programa Alke Solutions.
 
-Este proyecto fue desarrollado como parte de la evaluación integradora del módulo **"Fundamentos de bases de datos relacionales"**.
+## Requisitos
 
-## 🎯 Objetivo General
-Diseñar el modelo conceptual, definir las relaciones entre entidades y crear la base de datos en SQL para garantizar la coherencia y la integridad de la información financiera de la wallet, cumpliendo con los principios **ACID** (Atomicidad, Consistencia, Aislamiento y Durabilidad).
+- Python 3.x
+- Django 6.0.3
 
-## 🛠️ Tecnologías y Herramientas Utilizadas
-- **Lenguaje:** SQL (MySQL 8 / MariaDB)
-- **Gestor de Base de Datos / Cliente:** HeidiSQL / VS Code (SQLTools)
-- **Modelado ER:** Mermaid / Draw.io
+## Instalación y ejecución
 
-## 🗂️ Estructura de Archivos
-- `AlkeWallet.sql`: Script principal que contiene todas las sentencias DDL (creación de tablas, claves primarias y foráneas, índices) y DML (inserción de datos, transacciones y consultas específicas).
-- `Entregable_AlkeWallet.md`: Archivo con la estructura y respuestas de las consultas SQL, listo para ser utilizado como base para el documento entregable (Word).
-- `diagrama_erk.md`: Código en formato Mermaid del Diagrama Entidad-Relación (ER) normalizado en 3FN.
+```bash
+# 1. Activar entorno virtual
+venv\Scripts\activate        # Windows
 
-## 🗃️ Modelo de Datos (Entidades Principales)
-1. **Usuario:** Almacena los datos personales y el saldo de cada usuario (`user_id`, `nombre`, `correo_electronico`, `contrasena`, `saldo`, `fecha_creacion`).
-2. **Moneda:** Catálogo de divisas soportadas por la billetera (`currency_id`, `currency_name`, `currency_symbol`).
-3. **Transaccion:** Registro histórico y trazabilidad de los movimientos financieros entre los usuarios (`transaction_id`, `sender_user_id`, `receiver_user_id`, `importe`, `transaction_date`, `currency_id`).
+# 2. Instalar dependencias
+pip install django
 
-## 🚀 Funcionalidades Implementadas (SQL)
-- Creación de esquema y tablas relacionales (`CREATE TABLE`, `ALTER TABLE`, `INDEX`).
-- Control de Integridad Referencial (`FOREIGN KEY`, restricciones `ON DELETE CASCADE` y `RESTRICT`).
-- Inserción masiva de datos de prueba (`INSERT INTO`).
-- Consultas relacionales complejas usando sub-consultas y múltiples `JOIN`.
-- Modificación y eliminación de registros específicos (`UPDATE`, `DELETE`).
-- Protección de inconsistencias mediante transaccionalidad (`START TRANSACTION`, `COMMIT`, `ROLLBACK`).
-- Creación de Vistas y funciones de agregación (`COUNT`, `ORDER BY`, `CREATE VIEW`).
+# 3. Entrar al directorio del proyecto
+cd alkewallet
 
-## ⚙️ Instrucciones de Ejecución
-1. Abrir **HeidiSQL** (o cualquier cliente MySQL preferido) y conectarse al servidor local.
-2. Cargar el archivo `AlkeWallet.sql` (Archivo > Cargar archivo SQL).
-3. Ejecutar el script (tecla F9) para crear la base de datos `AlkeWallet`, generar las tablas e insertar los datos iniciales.
-4. (Opcional) Visualizar el diagrama de base de datos abriendo el código de `diagrama_erk.md` en [Mermaid Live Editor](https://mermaid.live).
+# 4. Ejecutar migraciones
+python manage.py migrate
 
----
-*✨ Desarrollado para la evaluación del módulo de Bases de Datos Relacionales.*
+# 5. Iniciar servidor de desarrollo
+python manage.py runserver
+```
+
+Abrir en el navegador: **http://127.0.0.1:8000/**
+
+## Estructura del proyecto
+
+```
+Alke-Wallet/
+├── venv/                          # Entorno virtual
+├── README.md                      # Este archivo
+└── alkewallet/                    # Proyecto Django
+    ├── manage.py                  # Utilidad de administración
+    ├── db.sqlite3                 # Base de datos SQLite
+    ├── alkewallet/                # Configuración del proyecto
+    │   ├── __init__.py
+    │   ├── settings.py            # Configuración general
+    │   ├── urls.py                # URLs del proyecto (include wallet)
+    │   ├── wsgi.py
+    │   └── asgi.py
+    └── wallet/                    # Aplicación principal
+        ├── __init__.py
+        ├── apps.py                # Configuración de la app
+        ├── admin.py               # Admin (por defecto)
+        ├── models.py              # Modelos (por defecto)
+        ├── views.py               # 5 vistas con lógica de negocio
+        ├── urls.py                # 5 rutas con nombres
+        ├── tests.py               # Tests (por defecto)
+        ├── templates/wallet/      # Plantillas HTML
+        │   ├── base.html          # Template base (herencia)
+        │   ├── inicio.html        # Dashboard principal
+        │   ├── depositar.html     # Formulario de depósito
+        │   ├── transferir.html    # Transferencias con numpad
+        │   ├── transacciones.html # Historial de movimientos
+        │   └── perfil.html        # Perfil del usuario
+        └── static/wallet/css/     # Archivos estáticos
+            └── styles.css         # Estilos CSS premium
+```
+
+## Funcionalidades
+
+| Página | URL | Descripción |
+|--------|-----|-------------|
+| Dashboard | `/` | Balance, acciones rápidas, últimos movimientos |
+| Depositar | `/depositar/` | Formulario funcional de depósito (actualiza saldo) |
+| Transferir | `/transferir/` | Numpad interactivo + selección de contacto |
+| Transacciones | `/transacciones/` | Historial completo con gráfico visual |
+| Perfil | `/perfil/` | Información del usuario y configuración |
+
+## Conceptos Django aplicados
+
+- **Proyecto y App**: Estructura `alkewallet/` (proyecto) + `wallet/` (aplicación)
+- **INSTALLED_APPS**: App registrada en `settings.py`
+- **URLs**: Configuración a nivel de proyecto (`include()`) y de aplicación (`app_name`)
+- **Vistas**: Funciones que manejan GET y POST, con contexto dinámico
+- **Templates**: Herencia con `{% extends %}`, tags `{% url %}`, `{% for %}`, `{% if %}`, `{% csrf_token %}`
+- **Archivos estáticos**: CSS cargado con `{% load static %}` y `{% static %}`
+- **Sesiones**: Persistencia de saldo y transacciones durante la sesión
+- **Messages**: Framework de mensajes para feedback al usuario
+
+## Autor
+
+Proyecto desarrollado como parte del módulo 6 del programa Alke Solutions.
