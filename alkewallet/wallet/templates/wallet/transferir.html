@@ -16,7 +16,7 @@
 
 <div style="padding: 24px; padding-bottom: 120px;">
 
-  <!-- Mensajes de éxito/error -->
+  <!-- Mensajes -->
   {% if messages %}
   {% for message in messages %}
   <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}" style="margin-bottom: 20px;">
@@ -34,7 +34,7 @@
   {% endfor %}
   {% endif %}
 
-  <!-- Saldo disponible -->
+  <!-- Saldo -->
   <div class="stats-card" style="margin: 0 0 20px; text-align: center;">
     <div style="font-size: 14px; color: var(--text-gray); margin-bottom: 4px;">Saldo disponible</div>
     <div style="font-size: 28px; font-weight: 700; color: var(--text-dark);">{{ saldo }}</div>
@@ -45,9 +45,10 @@
     <h3>Seleccionar destinatario</h3>
   </div>
 
+  {% if contactos %}
   <div class="contact-list" id="contact-list">
     {% for contacto in contactos %}
-    <div class="contact-item" data-contact="{{ contacto.nombre }}">
+    <div class="contact-item" data-contact="{{ contacto.id }}">
       <div class="contact-avatar {{ contacto.color }}">{{ contacto.iniciales }}</div>
       <div class="contact-info">
         <div class="contact-name">{{ contacto.nombre }}</div>
@@ -61,6 +62,11 @@
     </div>
     {% endfor %}
   </div>
+  {% else %}
+  <div class="alert alert-info">
+    <span>No hay otras cuentas disponibles. <a href="{% url 'wallet:cuenta_crear' %}">Crea una nueva cuenta</a> primero.</span>
+  </div>
+  {% endif %}
 
   <!-- Monto -->
   <div class="amount-display" style="margin: 30px 0;">
@@ -84,9 +90,12 @@
     <button type="button" class="numpad-btn" data-action="delete" style="background: transparent;">⌫</button>
   </div>
 
-  <!-- Formulario oculto para enviar via POST -->
+  <!-- Formulario POST oculto -->
   <form method="POST" action="{% url 'wallet:transferir' %}" id="transfer-form">
     {% csrf_token %}
+    {% if cuenta_principal %}
+    <input type="hidden" name="cuenta_origen" value="{{ cuenta_principal.pk }}">
+    {% endif %}
     <input type="hidden" name="monto" id="hidden-monto" value="0">
     <input type="hidden" name="contacto" id="hidden-contacto" value="">
     <button type="submit" class="btn btn-primary w-100" id="btn-send" style="margin-top: 20px;">
@@ -102,69 +111,62 @@
 {% block scripts %}
 <script>
 (function () {
-  let currentAmount = '';
-  let selectedContact = '';
-  const display = document.getElementById('amount-display');
-  const numpad = document.getElementById('numpad');
-  const hiddenMonto = document.getElementById('hidden-monto');
-  const hiddenContacto = document.getElementById('hidden-contacto');
-  const contactList = document.getElementById('contact-list');
-  const form = document.getElementById('transfer-form');
+  var currentAmount = '';
+  var selectedContact = '';
+  var display = document.getElementById('amount-display');
+  var numpad = document.getElementById('numpad');
+  var hiddenMonto = document.getElementById('hidden-monto');
+  var hiddenContacto = document.getElementById('hidden-contacto');
+  var contactList = document.getElementById('contact-list');
+  var form = document.getElementById('transfer-form');
 
   function formatAmount(value) {
     if (!value || value === '0') return '$0';
     return '$' + parseInt(value, 10).toLocaleString('es-CL');
   }
 
-  // Numpad
-  numpad.addEventListener('click', function (e) {
-    const btn = e.target.closest('.numpad-btn');
-    if (!btn) return;
-    const num = btn.getAttribute('data-num');
-    const action = btn.getAttribute('data-action');
+  if (numpad) {
+    numpad.addEventListener('click', function (e) {
+      var btn = e.target.closest('.numpad-btn');
+      if (!btn) return;
+      var num = btn.getAttribute('data-num');
+      var action = btn.getAttribute('data-action');
+      if (action === 'delete') {
+        currentAmount = currentAmount.slice(0, -1);
+      } else if (num !== null) {
+        if (num === '0' && currentAmount === '') return;
+        if (currentAmount.length >= 10) return;
+        currentAmount += num;
+      }
+      display.textContent = formatAmount(currentAmount);
+      hiddenMonto.value = currentAmount || '0';
+    });
+  }
 
-    if (action === 'delete') {
-      currentAmount = currentAmount.slice(0, -1);
-    } else if (num !== null) {
-      if (num === '0' && currentAmount === '') return;
-      if (currentAmount.length >= 10) return;
-      currentAmount += num;
-    }
-    display.textContent = formatAmount(currentAmount);
-    hiddenMonto.value = currentAmount || '0';
-  });
+  if (contactList) {
+    contactList.addEventListener('click', function (e) {
+      var item = e.target.closest('.contact-item');
+      if (!item) return;
+      if (item.classList.contains('active')) {
+        item.classList.remove('active');
+        selectedContact = '';
+      } else {
+        contactList.querySelectorAll('.contact-item').forEach(function (el) {
+          el.classList.remove('active');
+        });
+        item.classList.add('active');
+        selectedContact = item.getAttribute('data-contact');
+      }
+      hiddenContacto.value = selectedContact;
+    });
+  }
 
-  // Contactos
-  contactList.addEventListener('click', function (e) {
-    const item = e.target.closest('.contact-item');
-    if (!item) return;
-
-    if (item.classList.contains('active')) {
-      item.classList.remove('active');
-      selectedContact = '';
-    } else {
-      contactList.querySelectorAll('.contact-item').forEach(function (el) {
-        el.classList.remove('active');
-      });
-      item.classList.add('active');
-      selectedContact = item.getAttribute('data-contact');
-    }
-    hiddenContacto.value = selectedContact;
-  });
-
-  // Validar antes de enviar
-  form.addEventListener('submit', function (e) {
-    if (!selectedContact) {
-      e.preventDefault();
-      alert('Selecciona un destinatario');
-      return;
-    }
-    if (!currentAmount || currentAmount === '0') {
-      e.preventDefault();
-      alert('Ingresa un monto a transferir');
-      return;
-    }
-  });
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      if (!selectedContact) { e.preventDefault(); alert('Selecciona un destinatario'); return; }
+      if (!currentAmount || currentAmount === '0') { e.preventDefault(); alert('Ingresa un monto'); return; }
+    });
+  }
 })();
 </script>
 {% endblock %}

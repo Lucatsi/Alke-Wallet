@@ -1,0 +1,49 @@
+{% extends "wallet/base.html" %}
+
+{% block content %}
+<div class="wallet-header" style="padding-bottom: 40px;">
+  <div class="header-top">
+    <a href="{% url 'wallet:transacciones' %}" class="header-icon" title="Volver">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <h2 style="font-size: 18px; font-weight: 600; color: white; margin: 0;">Eliminar Transacción</h2>
+    <div style="width: 40px;"></div>
+  </div>
+</div>
+
+<div style="padding: 24px; padding-bottom: 120px;">
+  <div class="stats-card" style="text-align: center; margin-bottom: 24px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="var(--danger-red)" style="margin-bottom: 16px;">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <h3 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">¿Eliminar esta transacción?</h3>
+
+    <div class="receipt-details" style="text-align: left;">
+      <div class="receipt-row">
+        <span class="receipt-label">Tipo</span>
+        <span class="receipt-value">{{ transaccion.get_tipo_display }}</span>
+      </div>
+      <div class="receipt-row">
+        <span class="receipt-label">Monto</span>
+        <span class="receipt-value">{{ transaccion.cuenta.moneda.simbolo }}{{ transaccion.monto }}</span>
+      </div>
+      <div class="receipt-row">
+        <span class="receipt-label">Cuenta</span>
+        <span class="receipt-value">{{ transaccion.cuenta.nombre }}</span>
+      </div>
+      <div class="receipt-row">
+        <span class="receipt-label">Descripción</span>
+        <span class="receipt-value">{{ transaccion.descripcion }}</span>
+      </div>
+    </div>
+  </div>
+
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn w-100" style="background: var(--danger-red); color: white; margin-bottom: 12px;">Sí, Eliminar</button>
+  </form>
+  <a href="{% url 'wallet:transacciones' %}" class="btn btn-outline w-100">Cancelar</a>
+</div>
+{% endblock %}

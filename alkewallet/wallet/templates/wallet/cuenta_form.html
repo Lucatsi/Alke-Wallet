@@ -1,0 +1,76 @@
+{% extends "wallet/base.html" %}
+
+{% block content %}
+<!-- Header -->
+<div class="wallet-header" style="padding-bottom: 40px;">
+  <div class="header-top">
+    <a href="{% url 'wallet:cuentas_lista' %}" class="header-icon" title="Volver">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </a>
+    <h2 style="font-size: 18px; font-weight: 600; color: white; margin: 0;">{{ titulo }}</h2>
+    <div style="width: 40px;"></div>
+  </div>
+</div>
+
+<div class="modern-form" style="padding-bottom: 120px;">
+
+  <!-- Mensajes -->
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+    <span>{{ message }}</span>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label class="form-label">Nombre completo *</label>
+      <input type="text" name="nombre" class="form-control" placeholder="Ej: María García"
+             value="{% if cuenta %}{{ cuenta.nombre }}{% endif %}" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Correo electrónico *</label>
+      <input type="email" name="email" class="form-control" placeholder="Ej: maria@correo.com"
+             value="{% if cuenta %}{{ cuenta.email }}{% endif %}" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Teléfono</label>
+      <input type="text" name="telefono" class="form-control" placeholder="Ej: +56 9 1234 5678"
+             value="{% if cuenta %}{{ cuenta.telefono }}{% endif %}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Moneda *</label>
+      <select name="moneda" class="filter-select" required>
+        <option value="">Seleccionar moneda</option>
+        {% for moneda in monedas %}
+        <option value="{{ moneda.pk }}" {% if cuenta and cuenta.moneda.pk == moneda.pk %}selected{% endif %}>
+          {{ moneda.nombre }} ({{ moneda.simbolo }})
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    {% if not cuenta %}
+    <div class="form-group">
+      <label class="form-label">Saldo inicial</label>
+      <input type="number" name="saldo" class="form-control" placeholder="0" min="0" value="0">
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary w-100" style="margin-top: 16px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      {% if cuenta %}Guardar Cambios{% else %}Crear Cuenta{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock %}

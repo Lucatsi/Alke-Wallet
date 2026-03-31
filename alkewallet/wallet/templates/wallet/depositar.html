@@ -21,7 +21,7 @@
     <div style="font-size: 28px; font-weight: 700; color: var(--text-dark);">{{ saldo }}</div>
   </div>
 
-  <!-- Mensajes de éxito/error -->
+  <!-- Mensajes -->
   {% if messages %}
   {% for message in messages %}
   <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
@@ -39,9 +39,25 @@
   {% endfor %}
   {% endif %}
 
-  <!-- Formulario de depósito -->
+  <!-- Formulario -->
   <form method="POST" action="{% url 'wallet:depositar' %}">
     {% csrf_token %}
+
+    {% if cuentas|length > 1 %}
+    <div class="form-group">
+      <label class="form-label">Cuenta</label>
+      <select name="cuenta" class="filter-select" required>
+        {% for cuenta in cuentas %}
+        <option value="{{ cuenta.pk }}">{{ cuenta.nombre }} ({{ cuenta.moneda.simbolo }}{{ cuenta.saldo }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    {% else %}
+    {% for cuenta in cuentas %}
+    <input type="hidden" name="cuenta" value="{{ cuenta.pk }}">
+    {% endfor %}
+    {% endif %}
+
     <div class="form-group">
       <label class="form-label">Monto a depositar</label>
       <input type="number" name="monto" class="form-control" placeholder="$0" min="1" required>
@@ -51,9 +67,9 @@
       <label class="form-label">Método de depósito</label>
       <select name="metodo" class="filter-select" required>
         <option value="">Seleccionar método</option>
-        <option value="bank">Transferencia bancaria</option>
-        <option value="card">Tarjeta de crédito/débito</option>
-        <option value="cash">Depósito en efectivo</option>
+        <option value="Transferencia bancaria">Transferencia bancaria</option>
+        <option value="Tarjeta">Tarjeta de crédito/débito</option>
+        <option value="Efectivo">Depósito en efectivo</option>
       </select>
     </div>
 
@@ -70,12 +86,11 @@
     </button>
   </form>
 
-  <!-- Info card -->
   <div class="alert alert-info" style="margin-top: 20px;">
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
     </svg>
-    <span>Los depósitos se reflejan en tu saldo de forma inmediata.</span>
+    <span>Los depósitos se guardan en la base de datos y se reflejan inmediatamente.</span>
   </div>
 </div>
 {% endblock %}
